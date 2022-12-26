@@ -17,13 +17,34 @@ class Game {
   }
 
   registerEvents() {
-    /*
-      TODO:
-      Написать обработчик события, который откликается
-      на каждый введённый символ.
-      В случае правильного ввода слова вызываем this.success()
-      При неправильном вводе символа - this.fail();
-     */
+    this.currentSymbol = this.container.querySelector('.symbol_current');
+    this.currantSec = this.container.querySelector('.status__time');
+    this.currantSec.innerHTML = Array.from(this.wordElement.textContent).length;
+    let time = parseInt(this.currantSec.innerHTML);
+    
+    document.addEventListener('keyup', (event) => {
+      let currant = this.currentSymbol.textContent.toLowerCase();
+      let keyboard = event.key.toLowerCase();
+      if (keyboard === currant) {
+        this.success();
+      } else {
+        this.fail();
+      }
+      this.currantSec.innerHTML = Array.from(this.wordElement.textContent).length;
+      time = parseInt(this.currantSec.innerHTML);
+    });
+    
+    function timer() {
+      time -=1;
+      document.querySelector('.status__time').innerHTML = time;
+      if (time < 1) {
+        clearInterval(idInterval);
+        alert('Вы проиграли!');
+        location.reload();
+      }
+    }
+    
+    let idInterval = setInterval(timer, 1000);
   }
 
   success() {

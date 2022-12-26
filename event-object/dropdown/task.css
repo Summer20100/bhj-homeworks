@@ -15,6 +15,7 @@
   display: inline-block;
   cursor: pointer;
   border-radius: 6px;
+  margin-left: 145px;
 }
 
 .dropdown__value:after {
@@ -51,5 +52,5 @@
 }
 
 .card {
-  text-align: center;
+  /* text-align: center; */
 }
