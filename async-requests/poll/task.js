@@ -25,17 +25,45 @@ xhr.addEventListener('readystatechange', () => {
       
       poll.querySelectorAll('.poll__answer').forEach( (el, ind) => {
         el.addEventListener('click', () => {
-          alert('Спасибо, ваш голос засчитан!');
           const xhrVote = new XMLHttpRequest;
           xhrVote.open( 'POST', 'https://students.netoservices.ru/nestjs-backend/poll' );
           xhrVote.setRequestHeader( 'Content-type', 'application/x-www-form-urlencoded' );
-          xhrVote.send( 'vote=`&{questionId}`&answer=`&{ind}`' );
+          let name = 'vote=' + questionId + '&answer=' + ind;
+          xhrVote.send(name);
+          popUpMsg();
           if (xhrVote.readyState === xhrVote.DONE && xhrVote.status === 200) {
-            let vote = JSON.parse(xhrVote.responseText);
-            console.log(vote);
+            let vote = Object.values(JSON.parse(xhrVote.responseText).start);
+            if (vote.answer === el.innerText) {
+              document.querySelector('#poll__answers').innerHTML =  `
+              <div class="item">
+                <div class="item__code">
+                  ${vote.answer}
+                </div>
+                <div class="item__value">
+                  ${vote.votes} %
+                </div>
+              </div>
+            `;
+            }
           }
         })
       });
     }
   }
 })
+
+function popUpMsg() {
+  const popUpMsg = document.querySelector('body');
+  popUpMsg.insertAdjacentHTML("beforeEnd",
+    `<div class="modal_mask">
+       <div class="modal">
+            <div class="modal_msg">Спасибо, ваш голос засчитан!</div>
+            <button class="close_btn">Закрыть</button>
+        </div>
+    </div>`
+  );
+  const closeBtn = document.querySelector('.close_btn');
+  closeBtn.addEventListener('click', (ev) => {
+    ev.target.closest('div.modal_mask').remove();
+  });
+}
